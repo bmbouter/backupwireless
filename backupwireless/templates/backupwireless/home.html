@@ -1,0 +1,20 @@
+{% extends "backupwireless/base.html" %}
+
+{% block home_link_class %}active{% endblock %}
+
+{% block content %}
+
+<div class="hero-unit">
+  <p><h1>Backup Wireless is {{ statusText }}</h1></p>
+	  {% if user.is_authenticated %}
+	  <br/><br/>
+	  <form action="/switch/" method="post">
+		  {% csrf_token %}
+		  <center>
+		  <button type="submit" class="btn" style="width:200px; height:50px; font-size:15px">{{ buttonText }} Backup Wireless</button>
+		  </center>
+	  </form>
+	  {% endif %}
+</div>
+
+{% endblock %}
