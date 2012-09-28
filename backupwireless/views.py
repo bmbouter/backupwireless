@@ -24,14 +24,21 @@ class HomeView(TemplateView):
 def switch(request):
 	if WirelessNetwork.objects.all()[0].online:
 		for ap in AccessPoint.objects.all():
-			pHandle = Popen(['ssh', 'root@' + ap.ip, 'ifconfig', 'ath0', 'off']) 
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=disabled']) 
+			exitCode = pHandle.wait()
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'nvram', 'commit']) 
+			exitCode = pHandle.wait()
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'reboot']) 
 			exitCode = pHandle.wait()
 			# Log the IP for which the SSH failed?
 		WirelessNetwork.objects.all().update(online=0)
 	else:
 		for ap in AccessPoint.objects.all():
-			pHandle = Popen(['ssh', 'root@' + ap.ip, 'ifconfig', 'ath0', 'on']) 
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=mixed']) 
 			exitCode = pHandle.wait()
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'nvram', 'commit']) 
+			exitCode = pHandle.wait()
+			pHandle = Popen(['ssh', 'root@' + ap.ip, 'reboot']) 
 			# Log the IP for which the SSH failed?
 		WirelessNetwork.objects.all().update(online=1)
 	return HttpResponseRedirect("/");
