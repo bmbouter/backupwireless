@@ -13,12 +13,17 @@ class HomeView(TemplateView):
     template_name = "backupwireless/home.html"
     
     def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        online = WirelessNetwork.objects.all()[0].online
-        context.update({"statusText": 'Enabled' if online else 'Disabled'})
-        context.update({"buttonText": 'Disable' if online else 'Enable'})
-        context.update({"unreachableHosts": self.request.session.pop('unreachable_hosts','start').strip().rstrip(',')})
-        return context
+		context = super(HomeView, self).get_context_data(**kwargs)
+		online = WirelessNetwork.objects.all()[0].online
+		context.update({"statusText": 'Enabled' if online else 'Disabled'})
+		context.update({"buttonText": 'Disable' if online else 'Enable'})
+		unreachableHosts = self.request.session.get('unreachable_hosts')
+		if unreachableHosts:
+			unreachableHosts = unreachableHosts.strip().rstrip(',')
+		else:
+			unreachableHosts = "start"
+		context.update({"unreachableHosts": unreachableHosts})
+		return context
         
     def dispatch(self, *args, **kwargs):
         return super(HomeView, self).dispatch(*args, **kwargs)
