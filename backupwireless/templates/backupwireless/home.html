@@ -14,7 +14,24 @@
 		  <button type="submit" class="btn" style="width:200px; height:50px; font-size:15px">{{ buttonText }} Backup Wireless</button>
 		  </center>
 	  </form>
-	  {% endif %}
 </div>
 
+	{% if unreachableHosts == 'start' %}
+		<div class="alert alert-info">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<h4>Ready to flip the switch?</h4>
+		</div>
+	{% elif unreachableHosts == 'none' %}
+		<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<h4>That went great! Now sit back and relax.</h4>
+		</div>	
+	{% else %}
+		<div class="alert alert-block">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<h4>Oh snap! The following access point(s) failed to switch its wireless:</h4><br/>{{ unreachableHosts }}
+		</div>
+	{% endif %}
+	{% endif %}
+	
 {% endblock %}
