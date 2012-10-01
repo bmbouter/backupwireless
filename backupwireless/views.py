@@ -33,30 +33,30 @@ def switch(request):
 	unreachable_hosts = ""	
 	if WirelessNetwork.objects.all()[0].online:
 		for ap in AccessPoint.objects.all():
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=disabled']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1', ap.username + '@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=disabled']) 
 			exitCode = pHandle.wait()
 			if exitCode != 0:
 					unreachable_hosts += ap.ip + ","
 					continue
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'nvram', 'commit']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1', ap.username + '@' + ap.ip, 'nvram', 'commit']) 
 			exitCode = pHandle.wait()		
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'reboot']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1', ap.username + '@' + ap.ip, 'reboot']) 
 			exitCode = pHandle.wait()
 		WirelessNetwork.objects.all().update(online=0)
 	else:
 		for ap in AccessPoint.objects.all():
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=mixed']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1', ap.username + '@' + ap.ip, 'nvram', 'set', 'ath0_net_mode=mixed']) 
 			exitCode = pHandle.wait()
 			if exitCode != 0:
 					unreachable_hosts += ap.ip + ","
 					continue
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'nvram', 'commit']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1',ap.username + '@' + ap.ip, 'nvram', 'commit']) 
 			exitCode = pHandle.wait()
-			pHandle = Popen(['ssh', '-o ConnectTimeout=1', 'root@' + ap.ip, 'reboot']) 
+			pHandle = Popen(['ssh', '-o ConnectTimeout=1', ap.username + '@' + ap.ip, 'reboot']) 
 			exitCode = pHandle.wait()
 		WirelessNetwork.objects.all().update(online=1)
 	
-	if unreachable_hosts:
+	if not unreachable_hosts:
 		request.session['unreachable_hosts'] = unreachable_hosts
 	else:
 		request.session['unreachable_hosts'] = "none"
