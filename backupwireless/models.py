@@ -5,7 +5,7 @@ class WirelessNetwork(models.Model):
 	online = models.BooleanField(_(u"Online"), blank=False)
 
 	def __unicode__(self):
-			return unicode(self.get_online())
+			return unicode(self.online)
 			
 			
 class AccessPoint(models.Model):
@@ -13,4 +13,4 @@ class AccessPoint(models.Model):
 	username = models.CharField(_(u"Username"), blank=False, max_length=20)
 
 	def __unicode__(self):
-			return unicode(self.get_ip())
+			return unicode(self.ip)
