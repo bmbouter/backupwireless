@@ -2,10 +2,13 @@ from django.db import models
 from django.utils.translation import ugettext as _
 
 class WirelessNetwork(models.Model):
-	online = models.BooleanField(_(u"Online"), blank=False)
+	online = models.BooleanField(_(u"Enable Backup Wireless"), blank=False)
 
 	def __unicode__(self):
-			return unicode(self.online)
+		if self.online:
+			return u"Backup Wireless is Enabled"
+		else:
+			return u"Backup Wireless is Disabled"
 			
 			
 class AccessPoint(models.Model):
